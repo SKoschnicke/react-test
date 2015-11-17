@@ -61,7 +61,9 @@ class AppComponent extends React.Component {
     //this.state.selectedHero.name = newName;
   }
   handleHeroSelect = (selectedHeroId) => {
+    console.log("selected hero id", selectedHeroId);
     this.state.selectedHero = this.state.data.find(function(e) { e.id === selectedHeroId; })
+    console.log("changed selected hero to", this.state.selectedHero);
   }
   render() {
     var title = 'Tour of Heroes'; // FIXME, this should be a property
