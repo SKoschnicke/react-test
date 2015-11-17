@@ -16,7 +16,7 @@ class HeroList extends React.Component {
   render() {
     var heroList = this.state.data.map(function(hero) {
       return (
-        <li onClick={this.onSelect(hero.id)}>{hero.name}</li>
+        <li onClick={this.onSelect.bind(this, hero.id)}>{hero.name}</li>
       );
     }.bind(this));
     return (
@@ -61,8 +61,7 @@ class AppComponent extends React.Component {
     //this.state.selectedHero.name = newName;
   }
   handleHeroSelect = (selectedHeroId) => {
-    alert(selectedHeroId)
-    //this.state.selectedHero = this.state.data.find(function(e) { e.id === selectedHeroId; })
+    this.state.selectedHero = this.state.data.find(function(e) { e.id === selectedHeroId; })
   }
   render() {
     var title = 'Tour of Heroes'; // FIXME, this should be a property
@@ -71,7 +70,7 @@ class AppComponent extends React.Component {
         <h1>{title}</h1>
         <h2>My Heroes</h2>
         <p>Selected: {this.state.selectedHero.name}</p>
-        <HeroList data={this.state.data} onSelect={this.onSelectHero} />
+        <HeroList data={this.state.data} onSelect={this.handleHeroSelect} />
         <HeroForm onChange={this.onSelectedHeroNameChange}/>
       </div>
     );
