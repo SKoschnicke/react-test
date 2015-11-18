@@ -4,19 +4,27 @@ require('styles/App.css');
 import React from 'react';
 
 class HeroList extends React.Component {
+
   constructor(props) {
     super(props);
-    this.state = {
-      data: props.data
-    };
   }
+
   onSelect(id) {
     this.props.onSelect(id)
   }
+
+  getSelectedClass(id) {
+    if (this.props.selected.id == id) {
+      return "selected";
+    } else {
+      return "";
+    }
+}
+
   render() {
-    var heroList = this.state.data.map(function(hero) {
+    var heroList = this.props.data.map(function(hero) {
       return (
-        <li onClick={this.onSelect.bind(this, hero.id)}>{hero.name}</li>
+        <li className={this.getSelectedClass(hero.id)} onClick={this.onSelect.bind(this, hero.id)}>{hero.name}</li>
       );
     }.bind(this));
     return (
@@ -28,14 +36,19 @@ class HeroList extends React.Component {
 }
 
 class HeroForm extends React.Component {
-  handleChange(e) {
+
+  constructor(props) {
+    super(props);
+  }
+
+  handleChange = (e) => {
     var name = this.refs.name.value.trim();
     this.props.onChange(name);
     return;
   }
   render() {
     return (
-      <input type="text" ref="name" onChange={this.handleChange} />
+      <input type="text" ref="name" onChange={this.handleChange.bind(this)} value={this.props.value} />
     );
   }
 }
@@ -57,13 +70,13 @@ class AppComponent extends React.Component {
     super(props);
     this.state = {data: HEROES, selectedHero: HEROES[0] };
   }
-  onSelectedHeroNameChange(newName) {
-    //this.state.selectedHero.name = newName;
+  onSelectedHeroNameChange = (newName) => {
+    this.state.selectedHero.name = newName;
+    this.setState(this.state);
   }
   handleHeroSelect = (selectedHeroId) => {
-    console.log("selected hero id", selectedHeroId);
-    this.state.selectedHero = this.state.data.find(function(e) { e.id === selectedHeroId; })
-    console.log("changed selected hero to", this.state.selectedHero);
+    this.state.selectedHero = this.state.data.find((e) => { return e.id === selectedHeroId; })
+    this.setState(this.state);
   }
   render() {
     var title = 'Tour of Heroes'; // FIXME, this should be a property
@@ -71,9 +84,13 @@ class AppComponent extends React.Component {
       <div>
         <h1>{title}</h1>
         <h2>My Heroes</h2>
-        <p>Selected: {this.state.selectedHero.name}</p>
-        <HeroList data={this.state.data} onSelect={this.handleHeroSelect} />
-        <HeroForm onChange={this.onSelectedHeroNameChange}/>
+        <HeroList data={this.state.data} selected={this.state.selectedHero} onSelect={this.handleHeroSelect} />
+        <h2>{this.state.selectedHero.name} details!</h2>
+        <div><label>id: </label>{this.state.selectedHero.id}</div>
+        <div>
+          <label>name: </label>
+          <HeroForm onChange={this.onSelectedHeroNameChange} value={this.state.selectedHero.name} />
+        </div>
       </div>
     );
   }
